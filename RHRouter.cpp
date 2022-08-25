@@ -256,6 +256,15 @@ bool RHRouter::recvfromAck(uint8_t* buf, uint8_t* len, uint8_t* source, uint8_t*
 	    || (_thisAddress == 3 && _from == 2)
 	    || (_thisAddress == 4 && _from == 2)
 
+#elif RH_TEST_NETWORK==5
+	    // This network looks like 1-10-11-12 and respond to all nodes >1 and < 10 
+	       (_thisAddress == 1 && _from == 10)
+	    || (_thisAddress == 10 && (_from == 1 || _from == 11))
+	    || (_thisAddress == 11 && (_from == 10 || _from == 12))
+	    || (_thisAddress == 12 && _from == 11)
+		|| (_thisAddress > 1 && _thisAddress < 10)
+		|| (_from > 1 && _from < 10)
+
 #endif
 	    )
 	{

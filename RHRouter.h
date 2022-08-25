@@ -34,6 +34,7 @@
 //#define RH_TEST_NETWORK 2
 //#define RH_TEST_NETWORK 3
 //#define RH_TEST_NETWORK 4
+// #define RH_TEST_NETWORK 5
 
 /////////////////////////////////////////////////////////////////////
 /// \class RHRouter RHRouter.h <RHRouter.h>
