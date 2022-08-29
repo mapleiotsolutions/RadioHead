@@ -77,6 +77,10 @@ bool RHGenericDriver::waitPacketSent(uint16_t timeout)
 // Wait until no channel activity detected or timeout
 bool RHGenericDriver::waitCAD()
 {
+    //Keep track of the millis when this request was first made. Used to correct the TX time if we had to first perform a route discovery. 
+	//This is used to compensate the time recieved by the time it took the message to get to me. 
+	uint32_t Strt_millis = millis();
+
     if (!_cad_timeout)
 	return true;
 
@@ -93,7 +97,8 @@ bool RHGenericDriver::waitCAD()
 #if (RH_PLATFORM == RH_PLATFORM_STM32) // stdlib on STMF103 gets confused if random is redefined
 	 delay(_random(1, 10) * 100);
 #else
-         delay(random(1, 10) * 100); // Should these values be configurable? Macros?
+        //  delay(random(1, 10) * 100); // Should these values be configurable? Macros?
+        delay(random(0, _cad_timeout*2)); // Delay a random amount between 0 and CAD timeout * 2.
 #endif
     }
 

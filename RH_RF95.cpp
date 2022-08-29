@@ -331,11 +331,24 @@ bool RH_RF95::send(const uint8_t* data, uint8_t len)
     if (len > RH_RF95_MAX_MESSAGE_LEN)
 	return false;
 
+    //Keep track of the millis when this request was first made. Used to correct the TX time if we are held up by waitCAD
+	uint32_t Strt_millis = millis();
+
     waitPacketSent(); // Make sure we dont interrupt an outgoing message
     setModeIdle();
 
     if (!waitCAD()) 
 	return false;  // Check channel activity
+
+    // The mesh route discovery delay is in hundredths and is current millis - the millis this function was first called. In units of hundredths of a second to fit into 1 byte. 
+	// The last byte of the application message is reserved for any transmit delay in hundredths of a second. This way the reciever knows to compensate for it. 
+	uint16_t TX_CADDelay = (millis() - Strt_millis)/10;
+	if (buf[len-1] + TX_CADDelay >= 255){
+		buf[len-1] = 255;
+	}
+	else{
+		buf[len-1] = buf[len-1] + TX_CADDelay;
+	}
 
     // Position at the beginning of the FIFO
     spiWrite(RH_RF95_REG_0D_FIFO_ADDR_PTR, 0);
