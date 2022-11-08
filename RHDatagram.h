@@ -157,6 +157,8 @@ public:
     /// \return The address of this node
     uint8_t         thisAddress();
 
+    uint32_t activityMillis = millis();
+
 protected:
     /// The Driver we are to use
     RHGenericDriver&        _driver;

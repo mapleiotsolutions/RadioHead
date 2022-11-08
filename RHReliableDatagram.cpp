@@ -107,6 +107,10 @@ bool RHReliableDatagram::sendtoWait(uint8_t* buf, uint8_t len, uint8_t address)
 		}
 	}
 
+	//Update the activity Millis value due to attempting re-tries and the max duration being set to 2X timeout. 
+	//This doesn't account for the time it takes to send so effectivly could prevent re-tries unless we re-set it here. 
+	activityMillis = millis();
+
 	int32_t timeLeft;
         while ((timeLeft = timeout - (millis() - thisSendTime)) > 0)
 	{
